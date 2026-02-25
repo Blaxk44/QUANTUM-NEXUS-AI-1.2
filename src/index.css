@@ -1,0 +1,52 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  --font-serif: "Playfair Display", serif;
+  
+  --color-nexus-bg: #050505;
+  --color-nexus-card: #111111;
+  --color-nexus-accent: #00FF00;
+  --color-nexus-text: #FFFFFF;
+  --color-nexus-muted: #888888;
+  --color-nexus-border: #222222;
+}
+
+@layer base {
+  body {
+    @apply bg-nexus-bg text-nexus-text font-sans antialiased;
+  }
+}
+
+.glass {
+  @apply bg-white/5 backdrop-blur-lg border border-white/10;
+}
+
+.neon-glow {
+  box-shadow: 0 0 15px rgba(0, 255, 0, 0.3);
+}
+
+.neon-text {
+  text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+}
+
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  display: flex;
+  animation: marquee 30s linear infinite;
+}
+
+.meta-label {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
