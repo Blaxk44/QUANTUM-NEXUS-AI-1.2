@@ -1,5 +1,4 @@
 import express from "express";
-import { createServer as createViteServer } from "vite";
 import Database from "better-sqlite3";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -17,7 +16,8 @@ const __dirname = path.dirname(__filename);
 
 const JWT_SECRET = process.env.SESSION_SECRET || "nexus-quantum-secret-key-2026";
 
-const db = new Database("nexus.db");
+const dbPath = process.env.VERCEL ? "/tmp/nexus.db" : "nexus.db";
+const db = new Database(dbPath);
 
 // Initialize Database
 db.exec(`
@@ -580,18 +580,24 @@ app.post("/api/admin/users/:id/adjust", authenticate, adminOnly, (req, res) => {
 
 // Vite middleware for development
 if (process.env.NODE_ENV !== "production") {
+  const { createServer: createViteServer } = await import("vite");
   const vite = await createViteServer({
     server: { middlewareMode: true },
     appType: "spa",
   });
   app.use(vite.middlewares);
-} else {
+} else if (!process.env.VERCEL) {
   app.use(express.static(path.join(__dirname, "dist")));
   app.get("*", (req, res) => {
     res.sendFile(path.join(__dirname, "dist", "index.html"));
   });
 }
 
-app.listen(PORT, "0.0.0.0", () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-});
+// Only listen if not running in Vercel (serverless)
+if (!process.env.VERCEL) {
+  app.listen(PORT, "0.0.0.0", () => {
+    console.log(`Server running on http://localhost:${PORT}`);
+  });
+}
+
+export default app;
